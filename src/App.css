@@ -5,109 +5,140 @@
   justify-content: center;
   text-align: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #545514, #7d3c2e);
+  background: linear-gradient(135deg, #16222a, #3a6073);
   color: white;
   font-family: "Poppins", sans-serif;
   padding: 15px;
 }
 
 h1 {
-  font-size: 1.6rem;
+  font-size: 2rem;
   margin-bottom: 10px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
 .level-buttons {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .level-buttons button {
-  background: #fff;
-  color: #2e312f;
+  margin: 0 5px;
+  padding: 8px 16px;
   border: none;
+  background: #555;
+  color: white;
   border-radius: 6px;
-  padding: 6px 12px;
   cursor: pointer;
-  font-weight: 600;
   transition: 0.2s;
 }
 
 .level-buttons button.active {
-  background: #13083c;
-  color: #fff;
+  background: #00b894;
 }
 
 .level-buttons button:hover {
-  background: #a5d6a7;
+  background: #0984e3;
 }
 
 .scoreboard {
   display: flex;
   justify-content: space-between;
   width: 200px;
-  margin-bottom: 15px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .board {
-  display: grid;
-  width: 70vmin;
-  height: 70vmin;
-  background: #111;
+  display: inline-block;
   border: 3px solid #fff;
-  border-radius: 10px;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(20, 1fr);
+  background: #111;
+}
+
+.row {
+  display: flex;
 }
 
 .cell {
-  width: 100%;
-  height: 100%;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #222;
+  background: #111;
 }
 
 .snake {
-  background: #76ff03;
-  border-radius: 4px;
+  background: #00ff80;
+  border-radius: 5px;
 }
 
 .food {
-  background: #ff1744;
+  background: #ff3838;
   border-radius: 50%;
 }
 
-.game-over {
-  margin-top: 15px;
+/* Controls */
+.controls {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-button {
-  background: #fff;
-  color: #2e7d32;
-  font-weight: 600;
-  padding: 6px 14px;
+.controls button {
+  background: #444;
+  color: white;
   border: none;
+  border-radius: 8px;
+  font-size: 20px;
+  padding: 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.controls button:hover {
+  background: #0984e3;
+}
+
+.middle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Start Button */
+.start-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  background: #00b894;
+  color: white;
+  font-size: 1.1rem;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
-  font-size: 0.9rem;
 }
 
-button:hover {
-  background: #c8e6c9;
-}
-.board {
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+.start-btn:hover {
+  background: #0984e3;
 }
 
-.snake {
-  background: linear-gradient(145deg, #76ff03, #64dd17);
+/* Game Over */
+.game-over {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.game-over button {
+  padding: 8px 16px;
+  border: none;
+  background: #00b894;
+  color: white;
+  font-weight: bold;
   border-radius: 6px;
-  transition: 0.1s;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.food {
-  background: radial-gradient(circle, #ff1744, #d50000);
-  box-shadow: 0 0 10px #ff1744;
+.game-over button:hover {
+  background: #0984e3;
 }

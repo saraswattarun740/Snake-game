@@ -12,27 +12,29 @@ const App = () => {
   const [gameOver, setGameOver] = useState(false);
   const [level, setLevel] = useState("medium");
   const [speed, setSpeed] = useState(150);
+  const [gameStarted, setGameStarted] = useState(false);
 
-  // ✅ Set speed according to level
+  // ✅ Adjust speed when level changes
   useEffect(() => {
-    const levelSpeeds = { easy: 200, medium: 150, hard: 100 };
+    const levelSpeeds = { easy: 200, medium: 150, hard: 90 };
     setSpeed(levelSpeeds[level]);
   }, [level]);
 
-  // ✅ Stable moveSnake function using useCallback (fixes ESLint warning)
+  // ✅ Move Snake
   const moveSnake = useCallback(() => {
     setSnake((prevSnake) => {
       const newSnake = [...prevSnake];
       const head = { ...newSnake[0] };
 
       if (direction === "UP") head.y -= 1;
-      if (direction === "DOWN") head.y += 1;
-      if (direction === "LEFT") head.x -= 1;
-      if (direction === "RIGHT") head.x += 1;
+      else if (direction === "DOWN") head.y += 1;
+      else if (direction === "LEFT") head.x -= 1;
+      else if (direction === "RIGHT") head.x += 1;
 
       // Wall collision
       if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
         setGameOver(true);
+        setGameStarted(false);
         return prevSnake;
       }
 
@@ -40,13 +42,14 @@ const App = () => {
       for (let segment of newSnake) {
         if (segment.x === head.x && segment.y === head.y) {
           setGameOver(true);
+          setGameStarted(false);
           return prevSnake;
         }
       }
 
       newSnake.unshift(head);
 
-      // Eating food
+      // Food eaten
       if (head.x === food.x && head.y === food.y) {
         setScore((prev) => prev + 10);
         setFood({
@@ -61,14 +64,14 @@ const App = () => {
     });
   }, [direction, food]);
 
-  // ✅ Auto movement effect
+  // ✅ Auto movement only if started
   useEffect(() => {
-    if (gameOver) return;
+    if (!gameStarted || gameOver) return;
     const interval = setInterval(moveSnake, speed);
     return () => clearInterval(interval);
-  }, [moveSnake, speed, gameOver]);
+  }, [moveSnake, speed, gameOver, gameStarted]);
 
-  // ✅ Keyboard control
+  // ✅ Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "ArrowUp" && direction !== "DOWN") setDirection("UP");
@@ -80,7 +83,7 @@ const App = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [direction]);
 
-  // ✅ Restart function
+  // ✅ Restart Game
   const restartGame = () => {
     if (score > highScore) {
       localStorage.setItem("highScore", score);
@@ -91,6 +94,21 @@ const App = () => {
     setDirection("RIGHT");
     setScore(0);
     setGameOver(false);
+    setGameStarted(false);
+  };
+
+  // ✅ Start Game
+  const startGame = () => {
+    setGameOver(false);
+    setGameStarted(true);
+  };
+
+  // ✅ Manual button controls
+  const handleButtonPress = (dir) => {
+    if (dir === "UP" && direction !== "DOWN") setDirection("UP");
+    if (dir === "DOWN" && direction !== "UP") setDirection("DOWN");
+    if (dir === "LEFT" && direction !== "RIGHT") setDirection("LEFT");
+    if (dir === "RIGHT" && direction !== "LEFT") setDirection("RIGHT");
   };
 
   return (
@@ -110,6 +128,7 @@ const App = () => {
         ))}
       </div>
 
+      {/* Score */}
       <div className="scoreboard">
         <p>Score: {score}</p>
         <p>High: {highScore}</p>
@@ -133,6 +152,23 @@ const App = () => {
             })}
           </div>
         ))}
+      </div>
+
+      {/* Start Button */}
+      {!gameStarted && !gameOver && (
+        <button className="start-btn" onClick={startGame}>
+          ▶️ Start Game
+        </button>
+      )}
+
+      {/* Arrow Controls */}
+      <div className="controls">
+        <button onClick={() => handleButtonPress("UP")}>⬆️</button>
+        <div className="middle-buttons">
+          <button onClick={() => handleButtonPress("LEFT")}>⬅️</button>
+          <button onClick={() => handleButtonPress("DOWN")}>⬇️</button>
+          <button onClick={() => handleButtonPress("RIGHT")}>➡️</button>
+        </div>
       </div>
 
       {gameOver && (
