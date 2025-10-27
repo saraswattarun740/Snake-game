@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
 const App = () => {
@@ -10,83 +10,77 @@ const App = () => {
     Number(localStorage.getItem("highScore")) || 0
   );
   const [gameOver, setGameOver] = useState(false);
-  const [level, setLevel] = useState("medium"); // ✅ New state
-  const [speed, setSpeed] = useState(150); // ✅ Default medium speed
+  const [level, setLevel] = useState("medium");
+  const [speed, setSpeed] = useState(150);
 
+  // ✅ Set speed according to level
   useEffect(() => {
     const levelSpeeds = { easy: 200, medium: 150, hard: 100 };
     setSpeed(levelSpeeds[level]);
   }, [level]);
 
+  // ✅ Stable moveSnake function using useCallback (fixes ESLint warning)
+  const moveSnake = useCallback(() => {
+    setSnake((prevSnake) => {
+      const newSnake = [...prevSnake];
+      const head = { ...newSnake[0] };
+
+      if (direction === "UP") head.y -= 1;
+      if (direction === "DOWN") head.y += 1;
+      if (direction === "LEFT") head.x -= 1;
+      if (direction === "RIGHT") head.x += 1;
+
+      // Wall collision
+      if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
+        setGameOver(true);
+        return prevSnake;
+      }
+
+      // Self collision
+      for (let segment of newSnake) {
+        if (segment.x === head.x && segment.y === head.y) {
+          setGameOver(true);
+          return prevSnake;
+        }
+      }
+
+      newSnake.unshift(head);
+
+      // Eating food
+      if (head.x === food.x && head.y === food.y) {
+        setScore((prev) => prev + 10);
+        setFood({
+          x: Math.floor(Math.random() * 20),
+          y: Math.floor(Math.random() * 20),
+        });
+      } else {
+        newSnake.pop();
+      }
+
+      return newSnake;
+    });
+  }, [direction, food]);
+
+  // ✅ Auto movement effect
   useEffect(() => {
     if (gameOver) return;
     const interval = setInterval(moveSnake, speed);
     return () => clearInterval(interval);
-  }, [snake, direction, gameOver, speed]);
+  }, [moveSnake, speed, gameOver]);
 
+  // ✅ Keyboard control
   useEffect(() => {
     const handleKeyDown = (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-          if (direction !== "DOWN") setDirection("UP");
-          break;
-        case "ArrowDown":
-          if (direction !== "UP") setDirection("DOWN");
-          break;
-        case "ArrowLeft":
-          if (direction !== "RIGHT") setDirection("LEFT");
-          break;
-        case "ArrowRight":
-          if (direction !== "LEFT") setDirection("RIGHT");
-          break;
-        default:
-          break;
-      }
+      if (e.key === "ArrowUp" && direction !== "DOWN") setDirection("UP");
+      if (e.key === "ArrowDown" && direction !== "UP") setDirection("DOWN");
+      if (e.key === "ArrowLeft" && direction !== "RIGHT") setDirection("LEFT");
+      if (e.key === "ArrowRight" && direction !== "LEFT") setDirection("RIGHT");
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [direction]);
 
-  const moveSnake = () => {
-    const newSnake = [...snake];
-    const head = { ...newSnake[0] };
-
-    if (direction === "UP") head.y -= 1;
-    if (direction === "DOWN") head.y += 1;
-    if (direction === "LEFT") head.x -= 1;
-    if (direction === "RIGHT") head.x += 1;
-
-    // Wall collision
-    if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) {
-      setGameOver(true);
-      return;
-    }
-
-    // Self collision
-    for (let segment of newSnake) {
-      if (segment.x === head.x && segment.y === head.y) {
-        setGameOver(true);
-        return;
-      }
-    }
-
-    newSnake.unshift(head);
-
-    // Eating food
-    if (head.x === food.x && head.y === food.y) {
-      setScore(score + 10);
-      const newFood = {
-        x: Math.floor(Math.random() * 20),
-        y: Math.floor(Math.random() * 20),
-      };
-      setFood(newFood);
-    } else {
-      newSnake.pop();
-    }
-
-    setSnake(newSnake);
-  };
-
+  // ✅ Restart function
   const restartGame = () => {
     if (score > highScore) {
       localStorage.setItem("highScore", score);
@@ -103,26 +97,17 @@ const App = () => {
     <div className="snake-container">
       <h1>🐍 Snake Game</h1>
 
-      {/* ✅ Level Buttons */}
+      {/* Level Selector */}
       <div className="level-buttons">
-        <button
-          className={level === "easy" ? "active" : ""}
-          onClick={() => setLevel("easy")}
-        >
-          Easy
-        </button>
-        <button
-          className={level === "medium" ? "active" : ""}
-          onClick={() => setLevel("medium")}
-        >
-          Medium
-        </button>
-        <button
-          className={level === "hard" ? "active" : ""}
-          onClick={() => setLevel("hard")}
-        >
-          Hard
-        </button>
+        {["easy", "medium", "hard"].map((lvl) => (
+          <button
+            key={lvl}
+            className={level === lvl ? "active" : ""}
+            onClick={() => setLevel(lvl)}
+          >
+            {lvl.charAt(0).toUpperCase() + lvl.slice(1)}
+          </button>
+        ))}
       </div>
 
       <div className="scoreboard">
@@ -130,6 +115,7 @@ const App = () => {
         <p>High: {highScore}</p>
       </div>
 
+      {/* Game Board */}
       <div className="board">
         {Array.from({ length: 20 }).map((_, row) => (
           <div key={row} className="row">

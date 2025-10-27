@@ -97,3 +97,17 @@ button {
 button:hover {
   background: #c8e6c9;
 }
+.board {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.snake {
+  background: linear-gradient(145deg, #76ff03, #64dd17);
+  border-radius: 6px;
+  transition: 0.1s;
+}
+
+.food {
+  background: radial-gradient(circle, #ff1744, #d50000);
+  box-shadow: 0 0 10px #ff1744;
+}
