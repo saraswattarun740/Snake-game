@@ -1,38 +1,99 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.snake-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  text-align: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #545514, #7d3c2e);
   color: white;
+  font-family: "Poppins", sans-serif;
+  padding: 15px;
 }
 
-.App-link {
-  color: #61dafb;
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.level-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.level-buttons button {
+  background: #fff;
+  color: #2e312f;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.level-buttons button.active {
+  background: #13083c;
+  color: #fff;
+}
+
+.level-buttons button:hover {
+  background: #a5d6a7;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.board {
+  display: grid;
+  width: 70vmin;
+  height: 70vmin;
+  background: #111;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  grid-template-columns: repeat(20, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+}
+
+.cell {
+  width: 100%;
+  height: 100%;
+}
+
+.snake {
+  background: #76ff03;
+  border-radius: 4px;
+}
+
+.food {
+  background: #ff1744;
+  border-radius: 50%;
+}
+
+.game-over {
+  margin-top: 15px;
+}
+
+button {
+  background: #fff;
+  color: #2e7d32;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  background: #c8e6c9;
 }
